@@ -2,7 +2,7 @@
 # https://mariadb.org/download/
 [mariadb]
 name = MariaDB
-baseurl = https://ftp.osuosl.org/pub/mariadb/yum/10.7/rhel8-aarch64
+baseurl = https://ftp.osuosl.org/pub/mariadb/yum/10.7/rhel8-amd64
 module_hotfixes=1
 gpgkey=https://ftp.osuosl.org/pub/mariadb/yum/RPM-GPG-KEY-MariaDB
 gpgcheck=1
