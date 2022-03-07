@@ -14,7 +14,3 @@ RUN curl -o /tmp/oc.tar https://mirror.openshift.com/pub/openshift-v4/x86_64/cli
 
 #Untar oc file
 RUN tar -xzvf /tmp/oc.tar -C /tmp/ && mv /tmp/oc /usr/local/bin
-
-
-# COPY HTMl File
-COPY ./index.html /var/www/html
