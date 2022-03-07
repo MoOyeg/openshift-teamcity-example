@@ -4,7 +4,7 @@ FROM registry.redhat.io/ubi8
 COPY ./mariadb.repo /etc/yum.repos.d/
 
 # Install the required software
-RUN yum update -y && yum install nmap tar curl mariadb -y
+RUN yum update -y && yum install nmap tar curl MariaDB -y
 
 #Copy tar file from local
 COPY oc.tar /tmp/
