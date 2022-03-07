@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity-server-instance
+  namespace: teamcity-server
+spec:
+  selector:
+    matchLabels:
+      app: teamcity-server-instance
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: teamcity-server-instance
+    spec:
+      serviceAccountName: teamcity-sa
+      initContainers:
+      - name: init-restore
+        image: registry.redhat.io/openshift4/ose-cli:v4.7
+        env:
+          - name: TIDB_HOST
+            value: basic-tidb
+          - name: TIDB_PORT
+            value: '4000'
+          - name: SLEEP
+            value: '5'
+        volumeMounts:
+          - mountPath: "/data/teamcity_server/datadir"
+            name: teamcity-data
+        command: 
+          - /bin/bash
+          - -c
+          - |       
+            export HOME=/tmp/cli
+            echo ""
+            echo -n "Waiting for Teamcity Route to be Ready"
+            until $(oc get route/teamcity-server-instance &> /dev/null);do echo "Route is not available" && sleep $SLEEP;done
+            route=$(oc get route/teamcity-server-instance -n teamcity-server -o jsonpath='{.spec.host}')
+
+                        

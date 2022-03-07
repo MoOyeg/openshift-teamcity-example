@@ -1,0 +1,63 @@
+#TiDB has it's own intializer but not using that here https://docs.pingcap.com/tidb-in-kubernetes/stable/initialize-a-cluster
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tidb-initalizer
+  namespace: teamcity-server
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: tidb-initalizer
+    app.kubernetes.io/name: tidb
+spec:
+  selector:
+    matchLabels:
+      app: tidb-initalizer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tidb-initalizer
+    spec:
+      volumes:
+        - name: sqlscript
+          configMap:
+            name: sqlscript
+            defaultMode: 365
+      containers:
+      - name: tidb-initalizer
+        image: image-registry.openshift-image-registry.svc:5000/openshift/mysql:latest
+        imagePullPolicy: IfNotPresent      
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1"         
+        env:
+          - name: ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: tidb-secret
+                key: root
+          - name: TEAMCITY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: tidb-secret
+                key: teamcity
+          - name: TIDB_HOST
+            value: basic-tidb
+          - name: TIDB_PORT
+            value: '4000'
+        volumeMounts:
+          - name: sqlscript
+            mountPath: /root/sqlscript
+        command:
+        #Added sleep to allow sql debugging later
+          - "/bin/bash"
+          - "-c"
+          - > 
+            /root/sqlscript/sqlscript.sh;            
+            sleep infinity
+
+

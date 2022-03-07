@@ -37,7 +37,7 @@ spec:
       volumes:
         - name: teamcity-data
           persistentVolumeClaim:
-          claimName: teamcity-data-pvc
+            claimName: teamcity-data-pvc
         - name: teamcity-log
           persistentVolumeClaim:
-          claimName: teamcity-log-pvc
+            claimName: teamcity-log-pvc

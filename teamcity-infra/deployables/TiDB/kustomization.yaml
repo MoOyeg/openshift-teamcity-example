@@ -1,0 +1,6 @@
+resources:
+  - catalogsource.yaml
+  - subscription.yaml
+  - sqlscript-configmap.yaml
+  - tidbcluster.yaml
+  - tidbinitalizer.yaml

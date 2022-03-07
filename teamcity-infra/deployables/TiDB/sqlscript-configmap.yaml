@@ -1,0 +1,18 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: sqlscript
+  namespace: teamcity-server
+data:
+  sqlscript.sh: >-
+    #!/bin/sh
+
+    echo "This program will attempt to update the Database for host ${TIDB_HOST}"
+
+    mysql -h ${TIDB_HOST} -P ${TIDB_PORT} -u root -e "create database IF NOT EXISTS teamcity collate utf8mb4_bin";
+    mysql -h ${TIDB_HOST} -P ${TIDB_PORT} -u root -e "create user IF NOT EXISTS teamcity identified by '${TEAMCITY_PASSWORD}'";
+    mysql -h ${TIDB_HOST} -P ${TIDB_PORT} -u root -e "grant all privileges on teamcity.* to teamcity";
+    mysql -h ${TIDB_HOST} -P ${TIDB_PORT} -u root -e "grant process on *.* to teamcity";
+
+    echo "Complete"
+    
