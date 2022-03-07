@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crdb-client-secure
+  namespace: teamcity-server
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: crdb-tls-teamcity
+    app.kubernetes.io/name: cockroachdb
+spec:
+  selector:
+    matchLabels:
+      app: crdb-client-secure
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: crdb-client-secure
+    serviceAccountName: cockroach-operator-sa
+    spec:
+      containers:
+      - name: crdb-client-secure
+        securityContext:
+          privileged: true
+        image: registry.connect.redhat.com/cockroachdb/cockroach:v20.2.8
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1"         
+        env:
+          - name: DOCKER_IN_DOCKER
+            value: start      
+        command: 
+          - "/bin/bash"
+          - "-c"
+          - >
+            echo "Starting DB Initialization";
+            ./cockroach sql --certs-dir=/cockroach/cockroach-certs/ --host=crdb-teamcity-cluster-public -e "create database teamcity ENCODING = 'UTF-8'";
+            ./cockroach sql --certs-dir=/cockroach/cockroach-certs/ --host=crdb-teamcity-cluster-public -e "CREATE USER teamcity WITH LOGIN PASSWORD 'teamcity'";
+            ./cockroach sql --certs-dir=/cockroach/cockroach-certs/ --host=crdb-teamcity-cluster-public -e "GRANT ALL ON DATABASE teamcity TO teamcity";
+            ./cockroach sql --certs-dir=/cockroach/cockroach-certs/ --host=crdb-teamcity-cluster-public -e "GRANT SELECT ON TABLE teamcity.public.* TO teamcity";
+            sleep infinity
+        volumeMounts:
+        - name: client-certs
+          mountPath: /cockroach/cockroach-certs/
+      volumes:
+      - name: client-certs
+        projected:
+            sources:
+              - secret:
+                  name: crdb-teamcity-cluster-node
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - secret:
+                  name: crdb-teamcity-cluster-root
+                  items:
+                    - key: tls.crt
+                      path: client.root.crt
+                    - key: tls.key
+                      path: client.root.key
+            defaultMode: 256

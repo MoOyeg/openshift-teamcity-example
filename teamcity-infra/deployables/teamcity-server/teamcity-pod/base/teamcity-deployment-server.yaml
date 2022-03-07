@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teamcity-server-instance
+  namespace: teamcity-server
+spec:
+  selector:
+    matchLabels:
+      app: teamcity-server-instance
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: teamcity-server-instance
+    spec:
+      serviceAccountName: teamcity-sa
+      containers:
+        - name: teamcity-instance
+          securityContext:
+            privileged: true
+            resources:
+              requests:
+                memory: "1024Mi"
+                cpu: "750m"
+              limits:
+                memory: "2048Mi"
+                cpu: "1"
+          volumeMounts:
+            - mountPath: "/data/teamcity_server/datadir"
+              name: teamcity-data
+            - mountPath: "/opt/teamcity/logs"
+              name: teamcity-log          
+          image: >-
+            docker.io/jetbrains/teamcity-server:2021.2.3
+          ports:
+            - containerPort: 8111
+      volumes:
+        - name: teamcity-data
+          persistentVolumeClaim:
+          claimName: teamcity-data-pvc
+        - name: teamcity-log
+          persistentVolumeClaim:
+          claimName: teamcity-log-pvc

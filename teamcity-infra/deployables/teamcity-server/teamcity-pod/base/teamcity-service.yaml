@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: teamcity-server-instance
+  namespace: teamcity-server
+spec:
+  ports:
+    - protocol: TCP
+      port: 8111
+      targetPort: 8111
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: teamcity-server-instance
+

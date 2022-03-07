@@ -1,0 +1,20 @@
+kind: CrdbCluster
+apiVersion: crdb.cockroachlabs.com/v1alpha1
+metadata:
+  name: crdb-teamcity-cluster
+  namespace: teamcity-server
+spec:
+  cockroachDBVersion: v20.2.4
+  dataStore:
+    pvc:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        volumeMode: Filesystem
+  nodes: 3
+  tlsEnabled: true
+  #tlsEnabled: false
+

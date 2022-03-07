@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: teamcity-server-instance
+  namespace: teamcity-server
+spec:
+  to:
+    kind: Service
+    name: teamcity-server-instance
+    weight: 100
+  port:
+    targetPort: 8111
+  wildcardPolicy: None
