@@ -14,6 +14,13 @@ spec:
         app: teamcity-server-instance
     spec:
       serviceAccountName: teamcity-sa
+      volumes:
+        - name: teamcity-data
+          persistentVolumeClaim:
+            claimName: teamcity-data-pvc
+        - name: teamcity-log
+          persistentVolumeClaim:
+            claimName: teamcity-log-pvc
       containers:
         - name: teamcity-instance
           securityContext:
@@ -34,10 +41,3 @@ spec:
             docker.io/jetbrains/teamcity-server:2021.2.3
           ports:
             - containerPort: 8111
-      volumes:
-        - name: teamcity-data
-          persistentVolumeClaim:
-            claimName: teamcity-data-pvc
-        - name: teamcity-log
-          persistentVolumeClaim:
-            claimName: teamcity-log-pvc

@@ -1,5 +1,8 @@
 bases:
 - ../../base
 
+resources:
+- ca-configmap.yaml
+
 patchesStrategicMerge:
 - patch.yaml
