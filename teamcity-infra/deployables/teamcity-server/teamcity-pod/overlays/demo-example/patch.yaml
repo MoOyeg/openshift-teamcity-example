@@ -24,7 +24,16 @@ spec:
         - name: ca-configmap
           configMap:
             name: ca-configmap
-            defaultMode: 420         
+            defaultMode: 444
+      containers:
+        - name: teamcity-instance
+          volumeMounts:
+            - mountPath: "/usr/local/share/ca-certificates/service-ca.pem"
+              name: ca-configmap
+              subPath: service-ca.pem
+            - mountPath: "/etc/ssl/certs/service-ca.pem"
+              name: ca-configmap
+              subPath: service-ca.pem                 
       initContainers:
       - name: init-restore
         image: registry.redhat.io/ubi8/ubi:8.5-226.1645809065
@@ -58,5 +67,7 @@ spec:
             curl -o /data/teamcity_server/datadir/teamcity-backup.zip -L -O https://github.com/MoOyeg/openshift-teamcity-example/raw/main/teamcity-infra/deployables/teamcity-server/teamcity-pod/overlays/demo-example/teamcity-backup.zip
             cd /data/teamcity_server/datadir/ && unzip teamcity-backup.zip
             ls .
+                        
 
+                        
                         
