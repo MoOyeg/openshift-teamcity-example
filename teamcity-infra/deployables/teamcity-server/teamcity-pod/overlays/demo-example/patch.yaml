@@ -18,25 +18,12 @@ spec:
         - name: teamcity-data
           persistentVolumeClaim:
             claimName: teamcity-data-pvc
-        - name: teamcity-log
-          persistentVolumeClaim:
-            claimName: teamcity-log-pvc
-        - name: ca-configmap
-          configMap:
-            name: ca-configmap
-            defaultMode: 444
       containers:
         - name: teamcity-instance
-          volumeMounts:
-            - mountPath: "/usr/local/share/ca-certificates/service-ca.pem"
-              name: ca-configmap
-              subPath: service-ca.pem
-            - mountPath: "/etc/ssl/certs/service-ca.pem"
-              name: ca-configmap
-              subPath: service-ca.pem                 
+          image: image-registry.openshift-image-registry.svc:5000/teamcity-server/openshift-teamcity-server-custom:latest
       initContainers:
       - name: init-restore
-        image: registry.redhat.io/ubi8/ubi:8.5-226.1645809065
+        image: image-registry.openshift-image-registry.svc:5000/teamcity-server/openshift-teamcity-server-custom:latest
         env:
           - name: TIDB_HOST
             value: basic-tidb
@@ -53,19 +40,17 @@ spec:
           - /bin/bash
           - -c
           - |
-            #Extract OC
-            mkdir /tmp/cli       
-            curl -o /tmp/cli/oc.tar -L -O https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.8.0/openshift-client-linux.tar.gz && tar -xvf /tmp/cli/oc.tar -C /tmp/cli
-            echo ""
-            
+           
             #Install Unzip
             yum install unzip -y
 
             echo -n "Waiting for Teamcity Route to be Ready"
-            until [[ -n $(/tmp/cli/oc get route/teamcity-server-instance -o jsonpath='{.spec.host}') ]];do echo "Route is not available" && sleep $SLEEP;done
-            route=$(/tmp/cli/oc get route/teamcity-server-instance -o jsonpath='{.spec.host}')
+            until [[ -n $(oc get route/teamcity-server-instance -o jsonpath='{.spec.host}') ]];do echo "Route is not available" && sleep $SLEEP;done
+            route=$(oc get route/teamcity-server-instance -o jsonpath='{.spec.host}')            
             curl -o /data/teamcity_server/datadir/teamcity-backup.zip -L -O https://github.com/MoOyeg/openshift-teamcity-example/raw/main/teamcity-infra/deployables/teamcity-server/teamcity-pod/overlays/demo-example/teamcity-backup.zip
-            cd /data/teamcity_server/datadir/ && unzip teamcity-backup.zip
+            cd /data/teamcity_server/datadir/ && unzip teamcity-backup.zip 
+            chown -R 1000:1000 /data/teamcity_server/datadir/
+            chown -R 1000:1000 /opt/teamcity/logs
             ls .
                         
 

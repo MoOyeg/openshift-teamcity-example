@@ -1,0 +1,65 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: openshift-teamcity-server-custom
+  namespace: teamcity-server
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'openshift-teamcity-server-custom:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 5
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+    dockerStrategy:
+      from:
+        kind: DockerImage
+        name: 'docker.io/jetbrains/teamcity-server:2021.2.3'
+      volumes:
+        - name: ca-configmap
+          source:
+            type: ConfigMap
+            configMap: 
+              name: ca-configmap
+              defaultMode: 420
+              items:
+                - key: service-ca.crt
+                  path: service-ca.crt
+          mounts: 
+            - destinationPath: "/tmp/openshift"
+  postCommit: {}
+  source:
+    type: Dockerfile
+    dockerfile: >-
+      FROM docker.io/jetbrains/teamcity-server:2021.2.3
+
+      USER root
+
+      WORKDIR /
+
+      RUN curl -o oc.tar -L -O https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/4.8.0/openshift-client-linux.tar.gz \
+          && tar -xvf oc.tar \
+          && mv ./oc /usr/local/bin \
+          && chmod ugo+x /usr/local/bin/oc \
+          && oc version \
+          && cp /tmp/openshift/service-ca.crt /usr/local/share/ca-certificates \
+          && update-ca-certificates \
+          && chown -R 1000:1000 /services
+
+      #Expose Ports
+      EXPOSE 8080/tcp
+
+      #Set User to tcuser 
+      USER 1000
+
+    contextDir: /
+    # configMaps:
+    #   - configMap:
+    #       name: ca-configmap
+    #       defaultMode: 0777
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial
