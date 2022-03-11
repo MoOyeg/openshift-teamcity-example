@@ -23,6 +23,11 @@ Repo will attempt to spin up the TeamCity CI Server and show an example to build
   `oc apply -f ./deploy-tooling/argocd-deploy/application-infra.yaml`  
   This should create the necessary namespaces, serviceaccount and permission to run example.
 
+- The ServiceAccount being used will require enhanced privileges and the gitops tool might not have those permissions. Create the scc for the teamcity-sa service account.  
+  `oc apply -f ./deployables/Infra/base/teamcity-scc-anyuid.yaml`
+
 - Create TiDb Application via ArgoCD  
   `oc apply -f ./deploy-tooling/argocd-deploy/application-TiDB.yaml`  
   This should create the the TiDB Operator,TiDB MySQl Cluster, create a user called teamcity a database called teamcity and set the root and teamcity user passwords to teamcity.
+
+- Create the TeamCity Server via ArgoCD
