@@ -1,14 +1,14 @@
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: openshift-teamcity-server-custom
+  name: openshift-teamcity-agent-custom
   namespace: teamcity-server
 spec:
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: 'openshift-teamcity-server-custom:latest'
+      name: 'openshift-teamcity-agent-custom:latest'
   resources: {}
   successfulBuildsHistoryLimit: 5
   failedBuildsHistoryLimit: 5
@@ -17,7 +17,7 @@ spec:
     dockerStrategy:
       from:
         kind: DockerImage
-        name: 'docker.io/jetbrains/teamcity-server:2021.2.3'
+        name: 'docker.io/jetbrains/teamcity-agent:2021.2.3-linux-sudo'
       volumes:
         - name: ca-configmap
           source:
@@ -34,7 +34,7 @@ spec:
   source:
     type: Dockerfile
     dockerfile: >-
-      FROM docker.io/jetbrains/teamcity-server:2021.2.3
+      FROM docker.io/jetbrains/teamcity-agent:2021.2.3-linux-sudo
 
       USER root
 
@@ -45,21 +45,19 @@ spec:
           && mv ./oc /usr/local/bin \
           && chmod ugo+x /usr/local/bin/oc \
           && oc version \
+          && rm oc.tar \
           && cp /tmp/openshift/service-ca.crt /usr/local/share/ca-certificates \
+          && keytool -storepass changeit -noprompt -trustcacerts -importcert -file /tmp/openshift/service-ca.crt -keystore /opt/java/openjdk/lib/security/cacerts \
           && update-ca-certificates \
           && chown -R 1000:1000 /services
 
       #Expose Ports
-      EXPOSE 8080/tcp
+      EXPOSE 9090/tcp
 
-      #Set User to tcuser 
+      #Set User to buildagent
       USER 1000
 
     contextDir: /
-    # configMaps:
-    #   - configMap:
-    #       name: ca-configmap
-    #       defaultMode: 0777
   triggers:
     - type: ConfigChange
   runPolicy: Serial

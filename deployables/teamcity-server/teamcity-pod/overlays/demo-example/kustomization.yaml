@@ -5,4 +5,5 @@ resources:
 - ca-configmap.yaml
 
 patchesStrategicMerge:
-- patch.yaml
+- patch-server.yaml
+- patch-agent.yaml
