@@ -11,7 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: deployables/infra/base
+    path: deployables/Infra/base/
     repoURL: https://github.com/MoOyeg/openshift-teamcity-example.git
     targetRevision: main
   syncPolicy:
