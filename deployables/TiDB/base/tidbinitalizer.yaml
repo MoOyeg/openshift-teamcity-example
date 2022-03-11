@@ -56,7 +56,8 @@ spec:
             mountPath: /root/sqlscript
         command:
         #Added sleep to allow sql debugging later
-        #TODO Make this a Job
+        # Changed from using standalone sql script to inline ./root/sqlscript.sh
+        #TODO Make this a Job 
           - "/bin/bash"
           - "-c"
           - > 
