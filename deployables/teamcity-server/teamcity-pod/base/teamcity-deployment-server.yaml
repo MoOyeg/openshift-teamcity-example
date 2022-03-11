@@ -25,8 +25,6 @@ spec:
             claimName: teamcity-log-pvc
       containers:
         - name: teamcity-instance
-          securityContext:
-            privileged: true
           resources:
             requests:
               memory: "1024Mi"
