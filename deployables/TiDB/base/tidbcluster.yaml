@@ -5,6 +5,8 @@ apiVersion: pingcap.com/v1alpha1
 kind: TidbCluster
 metadata:
   name: basic
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   version: v5.4.0
   timezone: UTC

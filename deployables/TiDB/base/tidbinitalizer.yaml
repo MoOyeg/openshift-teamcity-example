@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tidb-initalizer
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
   namespace: teamcity-server
   labels:
     app.kubernetes.io/component: database
