@@ -2,3 +2,4 @@ resources:
  - teamcity-namespace.yaml
  - teamcity-sa.yaml
  - teamcity-admin-rolebinding.yaml
+ - gitops-admin-rolebinding.yaml
