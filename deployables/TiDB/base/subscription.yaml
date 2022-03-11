@@ -13,5 +13,5 @@ spec:
   name: tidb-operator
   source: operatorhubio-catalog
   sourceNamespace: openshift-marketplace
-  startingCSV: tidb-operator.v1.3.1
+
 
