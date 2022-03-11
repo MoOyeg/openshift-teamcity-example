@@ -50,7 +50,7 @@ spec:
             until [[ -n $(oc get route/teamcity-server-instance -o jsonpath='{.spec.host}') ]];do echo "Route is not available" && sleep $SLEEP;done
             ROUTE=$(oc get route/teamcity-server-instance -o jsonpath='{.spec.host}')            
             curl -o /data/teamcity_server/datadir/teamcity-backup.zip -L -O https://github.com/MoOyeg/openshift-teamcity-example/raw/main/deployables/teamcity-server/teamcity-pod/overlays/demo-example/teamcity-backup.zip
-            cd /data/teamcity_server/datadir/ && unzip teamcity-backup.zip 
+            cd /data/teamcity_server/datadir/ && unzip -o teamcity-backup.zip 
             chown -R 1000:1000 /data/teamcity_server/datadir/
             chown -R 1000:1000 /opt/teamcity/logs
             ls .

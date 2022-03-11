@@ -18,13 +18,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  ignoreDifferences:
-  - group: operators.coreos.com/v1alpha1
-    kind: Subscription
-    name: tidb-operator
-    namespace: teamcity-server
-    jsonPointers:
-    - /status/conditions
 status:
   health: {}
   summary: {}
