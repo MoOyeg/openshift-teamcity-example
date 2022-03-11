@@ -5,8 +5,9 @@ apiVersion: pingcap.com/v1alpha1
 kind: TidbCluster
 metadata:
   name: basic
+  namespace: teamcity-server
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   version: v5.4.0
   timezone: UTC
