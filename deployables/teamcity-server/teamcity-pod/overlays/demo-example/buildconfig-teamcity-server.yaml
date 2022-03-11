@@ -3,6 +3,8 @@ apiVersion: build.openshift.io/v1
 metadata:
   name: openshift-teamcity-server-custom
   namespace: teamcity-server
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   nodeSelector: null
   output:

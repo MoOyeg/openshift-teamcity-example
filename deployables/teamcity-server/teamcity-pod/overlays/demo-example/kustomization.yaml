@@ -3,6 +3,11 @@ bases:
 
 resources:
 - ca-configmap.yaml
+- buildconfig-teamcity-agent.yaml
+- buildconfig-teamcity-server.yaml
+- imagestream-teamcity-server.yaml
+- imagestream-teamcity-agent.yaml
+- imagestream-teamcity-test.yaml
 
 patchesStrategicMerge:
 - patch-server.yaml
