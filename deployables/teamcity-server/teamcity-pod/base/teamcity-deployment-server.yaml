@@ -25,13 +25,13 @@ spec:
         - name: teamcity-instance
           securityContext:
             privileged: true
-            resources:
-              requests:
-                memory: "1024Mi"
-                cpu: "750m"
-              limits:
-                memory: "2048Mi"
-                cpu: "1"
+          resources:
+            requests:
+              memory: "1024Mi"
+              cpu: "750m"
+            limits:
+              memory: "2048Mi"
+              cpu: "1"
           volumeMounts:
             - mountPath: "/data/teamcity_server/datadir"
               name: teamcity-data
