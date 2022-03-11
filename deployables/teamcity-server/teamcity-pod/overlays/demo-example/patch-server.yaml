@@ -44,7 +44,7 @@ spec:
           - |
            
             #Install Unzip
-            yum install unzip -y
+            #yum install unzip -y
 
             echo -n "Waiting for Teamcity Route to be Ready"
             until [[ -n $(oc get route/teamcity-server-instance -o jsonpath='{.spec.host}') ]];do echo "Route is not available" && sleep $SLEEP;done

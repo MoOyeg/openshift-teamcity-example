@@ -3,3 +3,4 @@ resources:
  - teamcity-sa.yaml
  - teamcity-admin-rolebinding.yaml
  - gitops-admin-rolebinding.yaml
+ - teamcity-scc-anyuid.yaml

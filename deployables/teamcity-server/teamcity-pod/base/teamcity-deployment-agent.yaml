@@ -15,12 +15,9 @@ spec:
       labels:
         app: teamcity-agent-instance
     spec:
+      serviceAccountName: teamcity-sa
       containers:
         - name: teamcity-instance
-          securityContext:
-            #Running as privileged an root for Docker in Docker, Please note this is not secure.
-            runAsUser: 0
-            privileged: true
           resources:
             requests:
               memory: "1024Mi"
