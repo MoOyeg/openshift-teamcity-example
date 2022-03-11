@@ -3,4 +3,6 @@ resources:
   - subscription.yaml
   - sqlscript-configmap.yaml
   - tidbcluster.yaml
+  - tidb-secret.yaml
   - tidbinitalizer.yaml
+
