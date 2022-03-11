@@ -1,5 +1,4 @@
 resources:
- - teamcity-sa.yaml
  - data-pvc.yaml
  - log-pvc.yaml
  - teamcity-deployment-server.yaml
