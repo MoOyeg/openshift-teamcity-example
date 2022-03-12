@@ -1,11 +1,13 @@
 # openshift-teamcity-example
 
-## Status: Not Ready
-
 This repo provides an example of how to run the [Teamcity CI Server](https://www.jetbrains.com/help/teamcity/teamcity-documentation.html) on Openshift.
 Repo will attempt to spin up the TeamCity CI Server and show an example to build an image and push it into the internal Openshift Image Registry.Repo also installs the TiDB Operator to serve as the database for the TeamCity Server.This is a general example and if being deployed in production hardening would be required for security.
 
 - See Known Issues Below for Known Issues
+
+## Contributions
+
+Repo is open to contributions especially on more build use cases.
 
 ## Pre-Requisites
 
@@ -25,7 +27,11 @@ Repo will attempt to spin up the TeamCity CI Server and show an example to build
   `oc create -f ./deploy-tooling/argocd-deploy/application-infra.yaml`  
   This should create the necessary namespaces, serviceaccount and permission to run example.
 
-- The ServiceAccount being used will require enhanced privileges and the gitops tool might not have those permissions. Create the scc for the teamcity-sa service account.  
+- The ServiceAccount being used will require enhanced privileges and the gitops tool might not have those permissions. Create the scc for the teamcity-sa service account.
+
+  if using Docker in Docker, we need privileged-scc  
+  `oc create -f ./deployables/Infra/base/teamcity-scc-privileged.yaml`  
+  else  
   `oc create -f ./deployables/Infra/base/teamcity-scc-anyuid.yaml`
 
 - Create TiDb Application via ArgoCD  
@@ -88,8 +94,16 @@ Repo will attempt to spin up the TeamCity CI Server and show an example to build
   With the agent running we can go back to our testFlask project page and select run on the build.
   ![TestFlaskProject](./assets/testflask_project.png?raw=true "TestFlask project")
 
+  This should start the run and we can go the the Build logs to see the running build.At the end of the build a new image should be pushed to our testFlask imagestream. You can confirm by running
+  `oc get is/openshift-teamcity-testflask -n teamcity-server`
+
+  it should have a recent update.
+
 ## Known Issues
 
 - ArgoCD Status for TiDB Operator is wrong so TiDB Application shows up as degraded. Working on a Fix.
 
 - If the Docker agent shows a "docker.server.version exists" it means the teamcity-sa does not have the necessary permissions.
+
+- if build fails on "FROM image-registry.openshift-image-registry.svc:5000/openshift/ubi8" with a name unknown error. it means the ubi8 image is not added to your cluster run:  
+  `oc tag --source=docker registry.redhat.io/ubi8/ubi:latest ubi8:latest -n openshift`
