@@ -82,6 +82,14 @@ Repo will attempt to spin up the TeamCity CI Server and show an example to build
 
   Copy value from above token and replace in token field. Test Connection to make sure it works and choose the option to save.
 
+  Scroll down to the Agent Images on the same page and select the edit option.Make sure the Deployment Option is set to teamcity-agent-instance which we created earlier and click save this should spin up an agent for us.If it does not go to the agents link(top page) and spin one up.
+  ![Teamcity Agent Profile](./assets/teamcity_agent_image.png?raw=true "Teamcity Agent Profile")
+
+  With the agent running we can go back to our testFlask project page and select run on the build.
+  ![TestFlaskProject](./assets/testflask_project.png?raw=true "TestFlask project")
+
 ## Known Issues
 
 - ArgoCD Status for TiDB Operator is wrong so TiDB Application shows up as degraded. Working on a Fix.
+
+- If the Docker agent shows a "docker.server.version exists" it means the teamcity-sa does not have the necessary permissions.
